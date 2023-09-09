@@ -1,24 +1,26 @@
 package com.university.normaiser.controller;
 
-import com.university.normaiser.model.Messages;
 import com.university.normaiser.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+@RestController // use of @RestController which specifically designed for RESTful APIs.
+@RequestMapping("/messages") // map web link to MessageController class
 
-@RestController
-@RequestMapping("/message")
-@CrossOrigin
+// class that is responsible for processing incoming REST API requests
 public class MessageController {
-    @Autowired
     private MessageService messageService;
 
-    @GetMapping("/getAll")
-    public List<Messages> getMessages() {
-        return messageService.getAllMessages();
+    @Autowired
+    public MessageController(MessageService messageService) {
+        this.messageService = messageService;
+    }
+
+
+    @GetMapping("/getByType")
+    @ResponseBody
+    @CrossOrigin(origins = "http://localhost:3005") // enable cross-origin calls for this method
+    public String getMessageByType(@RequestParam String type) {
+        return messageService.getMessageByType(type);
     }
 }

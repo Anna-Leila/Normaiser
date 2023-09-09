@@ -7,11 +7,10 @@ CREATE TABLE messages (
 );
 
 
-
+// + symbol means new line. In frontend it's replaces by \n symbol
 INSERT INTO messages VALUES
-                            (1, 'Out of bounds', 'You went out of bounds. Please, calm down and try again'),
-                            (2, 'Out of bounds', 'You went out of bounds. Breath in and relax'),
-                            (3, 'Out of bounds', 'You went out of bounds. Count to 10 and try again'),
-                            (4, 'Not end of the line', 'You have not reached the end of the line. Please, calm down and try again'),
-                            (5, 'Success', 'Congratulations!'),
+                            (1, 'Out of bounds', 'You went out of permitted bounds+"Within you, there is a stillness and a sanctuary to which you can retreat at any time and be yourself."+ ― Hermann Hesse'),
+                            (2, 'Out of bounds', 'You went out of permitted bounds+“Give your stress wings and let it fly away.”+ ― Terri Guillemets'),
+                            (3, 'Out of bounds', 'You went out of permitted bounds+“Freedom is a calm mind.”+ ― Shane Parrish'),
+                            (5, 'Not end of the line', 'Not end of the line!'),
                             (6, 'Success', 'Amazing job!');

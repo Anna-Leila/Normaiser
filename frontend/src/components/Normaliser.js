@@ -3,8 +3,7 @@ import {Stage, Layer, Line, Image} from 'react-konva'; // import classes from re
 import useImage from "use-image"; // import custom React hook for loading images
 import {useNavigate} from "react-router-dom"; // import React hook for navigating between pages
 import Modal from "react-modal"; // import modal component for popup message window
-//import './normaliser.css'; // import file with css for this component
-
+import './normaliser.css'; // import file with css for this component
 
 
 // function component App
@@ -30,7 +29,6 @@ function Normaliser() {
     const startBoundsDistance = 40;
 
     const endOfLine = 10; // the number of point at the center of the spiral that are considered its end
-    let distance = 0; // distance that the user has passed
 
 
 
@@ -94,14 +92,15 @@ function Normaliser() {
     function checkIfOutOfBounds() {
         // if center of the image is not on the spiral yet, but we went too far from the start
         if (index===lastIndex && distanceToClosestPoint > startBoundsDistance && notFinished) {
-            openModal("Out of bounds"); // finish "playing" with warning message
+            setOutputMessage(outOfBounds); // set correct output message - random message from backend database
+            openModal(); // open modal window with warning message
         }
 
         // we already are on the spiral
         // and closest point is father than allowed, and we haven't finished "playing" yet
         if (index!==lastIndex && distanceToClosestPoint > boundsDistance && notFinished) {
-            const message = <h6>{outOfBounds[randomNumberInRange(0, outOfBounds.length - 1)]}</h6>
-            openModal(message); // finish "playing" with warning message
+            setOutputMessage(outOfBounds); // set correct output message - random message from backend database
+            openModal(); // open modal window with warning message
         }
     }
 
@@ -110,8 +109,8 @@ function Normaliser() {
         // if we reached the center of the spiral, and we haven't finished "playing" yet
         if (index < endOfLine && notFinished) {
             setMessageColor('#ffba3a'); // set color to final message
-            const message = <h5>{success[randomNumberInRange(0, success.length - 1)]}</h5>
-            openModal(message); // finish "playing" with success message
+            setOutputMessage(success); // set correct output message - random message from backend database
+            openModal(); // open modal window with  message
         }
     }
 
@@ -128,7 +127,7 @@ function Normaliser() {
 
         // calculate speed at this interval
         const speed = distance / timeInterval;
-        console.log(speed, distance, timeInterval);
+        //console.log(speed, distance, timeInterval);
 
         imagePositionX = x; // update position of image center on X axis
         imagePositionY = y; // update position of image center on Y axis
@@ -172,22 +171,29 @@ function Normaliser() {
 
         if (index >= endOfLine) { // if we HAVEN'T reached the center (end) of the spiral
             // random message from array of messages for when the user hasn't reached the end of the line
-            const message = <h6>{notEndOfTheLine[randomNumberInRange(0, notEndOfTheLine.length - 1)]}</h6>
-            openModal(message); // finish "playing" with warning message
+            setOutputMessage(notEndOfTheLine); // set correct output message - random message from backend database
+            openModal(); // open modal window with warning message
         } else {
             checkIfFinished(); // check if we're finished "playing"
         }
     }
 
-    const randomNumberInRange = (min, max) => { // generate random number between min (inclusive) and max (inclusive)
-        return Math.floor(Math.random() // Math.random() - a random number in the range from 0 to less than 1
-            * (max - min + 1)) + min; // calculate for between min and max
-    };
+    // asynchronous function for setting message value to the one we get from backend database
+    async function setOutputMessage(requestType) {
+        // api address we need to reach
+        const apiAddress = "http://localhost:8080/messages/getByType?type=" + requestType;
+        await fetch(apiAddress)
+            .then((response) => response.text())
+            .then((text) => {
+                let myText = text.toString();
+                myText = myText.split("+").join('\n');
+                setModalMessage(myText);
+            });
+    }
 
-    function openModal(message) { // stop current processes and open message box
+    function openModal() { // stop current processes and open message box
         setDraggable(false); // set image to NOT draggable
         notFinished = false; // set current "playing" session as finished
-        setModalMessage(message); // set new message into the message window
 
         setIsOpen(true); // open the message box
     }
@@ -198,6 +204,7 @@ function Normaliser() {
     }
 
     let currentTime = Date.now(); // current time, initialised with starting time
+
 
     // return component
     return (
@@ -254,8 +261,8 @@ function Normaliser() {
                            },
                            content: { // content of the modal
                                // window is positioned in the center of the screen
-                               top: '50%', // set box upper border to 50% width of the window
-                               left: '50%', // set box left border to 50% height of the window
+                               top: '50%', // set box upper border to 50% height of the window
+                               left: '50%', // set box left border to 50% width of the window
                                right: 'auto', // right border is auto-calculated
                                bottom: 'auto', // left border is out-calculated
 
@@ -268,7 +275,7 @@ function Normaliser() {
                            }
                        }}
                 >
-                    {modalMessage} {/* message to display */}
+                    <div>{modalMessage}</div> {/* message to display */}
 
                     <div className="text-center"> {/* center the button */}
                         {/* button for submitting information and closing the page */}
@@ -322,23 +329,8 @@ let points = []; // point of the spiral
 const numberOfCircles = 4; // number of circles in the spiral
 const pointsPerCircle = 100; // number of points for every circle of the spiral
 
-const outOfBounds = ["You went out of bounds. Please, calm down and try again",
-    "You went out of bounds. Breath in and relax",
-    "You went out of bounds. Count to 10 and try again",
-    "You went out of bounds. Take your time and relax",
-    "You went out of bounds. Pause, relax, continue",
-    "You went out of bounds. Take a breath and everything will be ok",
-    "You went out of bounds. Take your time, have a rest"];
-const notEndOfTheLine = ["You haven't reached the end of the line. Please, calm down and try again",
-    "You haven't reached the end of the line. Breath in and relax",
-    "You haven't reached the end of the line. Count to 10 and try again.",
-    "You haven't reached the end of the line. Take your time and relax",
-    "You haven't reached the end of the line. Pause, relax, continue",
-    "You haven't reached the end of the line. Take a breath and everything will be ok",
-    "You haven't reached the end of the line. Take your time, have a rest"];
-const success = ["Congratulations!",
-    "Amazing work!",
-    "Good job! Now smile!"];
-
+const outOfBounds = "Out of bounds";
+const notEndOfTheLine = "Not end of the line";
+const success = "Success";
 
 export default Normaliser; // expose App function to access in other files
