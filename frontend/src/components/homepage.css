@@ -1,0 +1,43 @@
+#root {
+    width: 100%;
+    height: 100%;
+}
+
+#homepage {
+    width: 400px;
+    height: 200px;
+    align-items: center;
+    justify-content: center;
+}
+
+.pretty-heading {
+    font-size: 50px;
+    font-weight: bold!important;
+    font-family: monospace;
+
+    letter-spacing: 4px!important;
+    cursor: pointer;
+    text-transform: uppercase;
+
+    /*width: 8vw;*/
+    padding: 5%;
+
+    background: linear-gradient(to right, rgb(43, 211, 192), rgba(255, 255, 255, 10), rgba(39, 125, 236, 100) 10%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 15s infinite linear;
+}
+
+
+
+@keyframes shine {
+    0% {
+        background-position: 0px;
+    }
+    70% {
+        background-position: 380px;
+    }
+    100% {
+        background-position: 380px;
+    }
+}

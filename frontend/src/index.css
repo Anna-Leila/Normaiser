@@ -2,18 +2,21 @@
     color: white;  /* font color */
     font-size: large; /* large font size */
     justify-content: center;
-    background-color: blueviolet; /* button color */
+    background-color: #2993fa; /* button color */
+    border-width: 1px;
+    border-color: black;
+    cursor: pointer;
 }
 
 @media (hover: hover) { /* feature for devices on which hover works - for computers, not mobile devices */
     .btn:hover { /* when hover oven button */
         color: white; /* set button font color white */
-        background-color: magenta; /* set button itself magenta */
+        background-color: #fa92fa; /* set button itself magenta */
     }
 }
 @media (hover: hover) { /* feature for devices on which hover works - for computers, not mobile devices */
     .nav-item:hover { /* when hover over navigation bar item */
         color: white; /* set font color white */
-        background-color: magenta; /* set item itself magenta */
+        background-color: #fa92fa; /* set item itself magenta */
     }
 }

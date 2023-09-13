@@ -1,7 +1,7 @@
-h6, h5, div {
+div.modal-message {
     white-space: pre-line;
 }
 
-.text-center {
+div.text-center {
     margin-top: 8px;
 }
