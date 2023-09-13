@@ -1,15 +1,13 @@
 package com.university.normaiser;
 
-import com.university.normaiser.controller.MessageController;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.boot.SpringApplication; // import class to bootstrap and launch Spring app
+import org.springframework.boot.autoconfigure.SpringBootApplication; // import SpringBootApplication annotation
 
-@SpringBootApplication
-public class NormaiserApplication {
+@SpringBootApplication // annotation to mark the configuration class
+public class NormaiserApplication { // configuration class itself
 
-	public static void main(String[] args) {
-		SpringApplication.run(NormaiserApplication.class, args);
+	public static void main(String[] args) { // starting application point
+		SpringApplication.run(NormaiserApplication.class, args); // run application
 	}
 
 }

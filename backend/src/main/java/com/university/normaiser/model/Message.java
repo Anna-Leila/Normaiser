@@ -1,45 +1,25 @@
 package com.university.normaiser.model;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.persistence.*; // import Entity, Table etc.
+import lombok.Data; // import Data annotation
 
 
-@Entity
-@Data
-@Table(name = "messages")
+@Entity // current class is an entity - persistence object to be linked with database
+@Data // this annotation generates getters, setters, toString and others without any "vanilla" java code
+@Table(name = "messages") // link this class to database table with name "messages"
+
+// class that holds data of the table with messages
 public class Message {
-    @Id
+    @Id // id column in the table
+    // strategy of new ids' generation for adding lines to database - in this implementation is NOT used
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private int id;
+    @Column // this attribute corresponds to a column in the database table
+    private int id; // id attribute
 
-    @Column
-    private String message;
+    @Column // this attribute corresponds to a column in the database table
+    private String message; // message attribute
 
-    @Column
-    private String type;
+    @Column // this attribute corresponds to a column in the database table
+    private String type; // type attribute
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 }
