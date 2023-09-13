@@ -8,7 +8,7 @@ import './normaliser.css'; // import file with css for this component
 
 // function component App
 function Normaliser() {
-    const width = window.innerWidth, height = window.innerHeight; // get screen width and height
+    document.body.style.backgroundColor = "white" // set body background to white
 
     const navigate = useNavigate(); // save useNavigate method in a constant
 
@@ -22,43 +22,39 @@ function Normaliser() {
     const [modalMessage, setModalMessage] = useState(""); // message in the message box
     const [messageColor, setMessageColor] = useState('#0610d7'); // color of message in the message box
 
-    // max allowed "step away" distance from current point on the line
-    const boundsDistance = 20;
-
-    // max allowed "step away" distance from first point on the line
-    const startBoundsDistance = 40;
-
-    const endOfLine = 10; // the number of point at the center of the spiral that are considered its end
+    let sectionIndex = 0; // index of the current section (0 on the outer end, grows LARGER to the center)
+    const sectionSize = pointsPerCircle / 4;  // size of the section in circle point -  currently a quarter of a circle is a section
+    const speedArray = []; // array of speeds for each section
+    let distance = 0; // distance passed from beginning of the section
 
 
+    const [rose] = useImage("/images/rose.png"); // get rose image from public folder
 
+    const width = window.innerWidth, height = window.innerHeight; // get screen width and height
     calculatePoints(width, height); // get spiral points' coordinates for screen of this size
+
 
     const canvas = document.createElement('canvas'); // create canvas element
     const ctx = canvas.getContext('2d'); // get 2d drawing context on the canvas
-
     // create gradient from top left corner to bottom right corner
     const gradient = ctx.createLinearGradient(0, 0, width, height);
     gradient.addColorStop(0.30, '#57f54c'); // add a green color stop
     gradient.addColorStop(0.70, '#1325ed'); // add a blue color stop
 
 
-    const [rose] = useImage("/images/rose.png"); // get rose image from public folder
-    const imageWidth = 60, imageHeight = 60; // define image width and height
-    const halfImageWidth = imageWidth / 2, halfImageHeight = imageHeight / 2; // calculate center of the image
-
-
     const lastIndex = (pointsPerCircle * numberOfCircles) - 1; // index of last point
     let index = lastIndex; // index of the current closest point - initially equal to the index of the last point
+    // (index is maximum on the outer end, grows SMALLER to the center; equals 0 at the center end)
+
     const startingImagePositionX = points[index * 2]; // !starting position of the CENTER of the image on x-axis
     const startingImagePositionY = points[index * 2 + 1] + halfImageHeight; // !starting position of the CENTER of the image on y-axis
-
-    let distanceToClosestPoint = halfImageHeight; // set initial distance from image center to closest (first) point
-
     // position of image center on X axis - initially equal to the starting position on X axis
     let imagePositionX = startingImagePositionX;
     // position of image center on Y axis - initially equal to the starting position on Y axis
     let imagePositionY = startingImagePositionY;
+
+
+    let distanceToClosestPoint = halfImageHeight; // set initial distance from image center to closest (first) point
 
 
     function updateClosestPoint(x, y) { // update the index of the point, closest to center of the image
@@ -92,15 +88,13 @@ function Normaliser() {
     function checkIfOutOfBounds() {
         // if center of the image is not on the spiral yet, but we went too far from the start
         if (index===lastIndex && distanceToClosestPoint > startBoundsDistance && notFinished) {
-            setOutputMessage(outOfBounds); // set correct output message - random message from backend database
-            openModal(); // open modal window with warning message
+            showOutputMessage(outOfBounds); // show correct output message - random message from backend database
         }
 
         // we already are on the spiral
         // and closest point is father than allowed, and we haven't finished "playing" yet
         if (index!==lastIndex && distanceToClosestPoint > boundsDistance && notFinished) {
-            setOutputMessage(outOfBounds); // set correct output message - random message from backend database
-            openModal(); // open modal window with warning message
+            showOutputMessage(outOfBounds); // show correct output message - random message from backend database
         }
     }
 
@@ -108,93 +102,145 @@ function Normaliser() {
     function checkIfFinished() {
         // if we reached the center of the spiral, and we haven't finished "playing" yet
         if (index < endOfLine && notFinished) {
-            setMessageColor('#ffba3a'); // set color to final message
-            setOutputMessage(success); // set correct output message - random message from backend database
-            openModal(); // open modal window with  message
+            showOutputMessage(success); // show correct output message - random message from backend database
         }
     }
 
     // get speed at the movement interval
-    function getSpeed(x, y, time) {
-        const distanceX = Math.abs(imagePositionX - x); // get distance (in pixels) on X axis
-        const distanceY = Math.abs(imagePositionY - y); // get distance (in pixels) on Y axis
-
-        // calculate distance between previous point and current point
-        const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-
+    function getSpeed(time) {
         // calculate time interval between previous point and current point
         const timeInterval = time - currentTime; // time interval of the image movement in milliseconds
 
-        // calculate speed at this interval
-        const speed = distance / timeInterval;
-        //console.log(speed, distance, timeInterval);
+        const speed = distance / timeInterval; // calculate speed at this interval
+        if (speed !== 0) { // if speed isn't zero
+            speedArray.push(speed); // add current speed to the array of all speeds
+        }
+    }
+
+    // check if we passed a whole section,
+    // and if we did, calculate speed on that section and mark the start of a new section
+    function checkDistance(time) {
+        // if are at the section end or already passed it
+        if (index <= lastIndex - (sectionIndex * sectionSize)) {
+            // if this isn't zero section (before spiral start) or last section (in the center)
+            if (index !== 0 && sectionIndex !== 0) {
+                getSpeed(time); // get speed on this section
+            }
+            currentTime = time; // update current time
+            distance = 0; // update interval distance
+            sectionIndex++; // move to the next section
+        }
+    }
+
+    // update position of image center, update distance from section start to current point
+    function updatePosDist(x, y) {
+        const distanceX = Math.abs(imagePositionX - x); // get distance (in pixels) on X axis
+        const distanceY = Math.abs(imagePositionY - y); // get distance (in pixels) on Y axis
+
+        // calculate distance between previous image position and current image position
+        const pointsDist = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+        distance += pointsDist; // update distance from section start to current point
 
         imagePositionX = x; // update position of image center on X axis
         imagePositionY = y; // update position of image center on Y axis
-        currentTime = time; // update current time
     }
 
 
-    const startDrag = (e) => { // when user starts dragging image
+    const onStartDrag = (e) => { // when user starts dragging image
         // get coordinates of the center of the image
         let x = e.target.x() + halfImageWidth, y = e.target.y() + halfImageHeight;
         const time = Date.now(); // current time in milliseconds
 
+        updatePosDist(x, y); // update image position and passed distance
         updateClosestPoint(x, y); // update the point closest to the center of the image
 
+        checkDistance(time); // check if section was passed
         checkIfOutOfBounds(); // check if we left the allowed area
-        getSpeed(x, y, time); // get current speed of the image movement
     }
 
-    const dragPicture = (e) => { // when user is dragging
+    const onDragPicture = (e) => { // when user is dragging
         // get coordinates of the center of the image
         let x = e.target.x() + halfImageWidth, y = e.target.y() + halfImageHeight;
         const time = Date.now(); // current time in milliseconds
 
+        updatePosDist(x, y); // update image position and passed distance
         updateClosestPoint(x, y); // update the point closest to the center of the image
 
+        checkDistance(time); // check if section was passed
         checkIfOutOfBounds(); // check if we left the allowed area
-        getSpeed(x, y, time); // get current speed of the image movement
-
-        checkIfFinished(); // check if we reached the center (end) of the spiral
+        checkIfFinished(); // check if we reached the center end of the spiral
     }
 
-    const stopDrag = (e) => { // wen user stops dragging image
+    const onStopDrag = (e) => { // when user stops dragging image
         // get coordinates of the center of the image
         let x = e.target.x() + halfImageWidth, y = e.target.y() + halfImageHeight;
         const time = Date.now(); // current time in milliseconds
 
+        updatePosDist(x, y); // update image position and passed distance
         updateClosestPoint(x, y); // update the point closest to the center of the image
 
-        checkIfOutOfBounds(); // check if we left the allowed area\
-        getSpeed(x, y, time); // get current speed of the image movement
+        checkDistance(time); // check if section was passed
+        checkIfOutOfBounds(); // check if we left the allowed area
 
         if (index >= endOfLine) { // if we HAVEN'T reached the center (end) of the spiral
             // random message from array of messages for when the user hasn't reached the end of the line
-            setOutputMessage(notEndOfTheLine); // set correct output message - random message from backend database
-            openModal(); // open modal window with warning message
+            showOutputMessage(notEndOfTheLine); // show correct output message - random message from backend database
         } else {
             checkIfFinished(); // check if we're finished "playing"
         }
     }
 
-    // asynchronous function for setting message value to the one we get from backend database
-    async function setOutputMessage(requestType) {
+    // asynchronous function for getting message value from backend database and then displaying it in modal
+    async function showOutputMessage(requestType) {
         // api address we need to reach
         const apiAddress = "http://localhost:8080/messages/getByType?type=" + requestType;
+        stopProcesses(); // stop moving the picture across the screen
+
+        // await for fetching data and showing message
         await fetch(apiAddress)
-            .then((response) => response.text())
-            .then((text) => {
-                let myText = text.toString();
-                myText = myText.split("+").join('\n');
-                setModalMessage(myText);
+            .then((response) => response.text()) // get text message of the api response
+            .then((text) => { // show message on screen
+                let myText = text.toString(); // convert to string
+                myText = myText.split("+").join('\n'); // replace + by new line symbol \n
+                if (requestType === success) {
+                    myText += "\n";
+                    myText += assessCondition();
+                    setMessageColor('#ff9a00'); // set color to final message
+                }
+                setModalMessage(myText); // set message in the modal window
+                openModal(); // display modal window
             });
     }
-
-    function openModal() { // stop current processes and open message box
+    
+    function stopProcesses() { // stop moving the picture across the screen, set session to finished
         setDraggable(false); // set image to NOT draggable
         notFinished = false; // set current "playing" session as finished
+    }
 
+    function assessCondition() { // asses the user's psychological condition
+        let sumSpeed = 0; // summa of all speeds
+        let maxSpeed = 0; // maximum speed in the array
+        let minSpeed = 10000000.0; // minimum speed in the array
+        speedArray.forEach((speed) => { // for every speed in the array
+            sumSpeed += speed; // add the speed to sum
+            maxSpeed = Math.max(maxSpeed, speed); // update maximum speed
+            minSpeed = Math.min(minSpeed, speed); // update minimum speed
+        });
+        const averageSpeed = sumSpeed / speedArray.length; // calculate average speed in the array
+        /*console.log(speedArray);
+        console.log(averageSpeed, sumSpeed, speedArray.length, minSpeed, maxSpeed);*/
+
+        if (minSpeed >= averageSpeed / 1.2 && maxSpeed <= averageSpeed * 1.2) { // first boundaries of min and max percentage
+            return "Good condition"; // condition assessment
+        } else if (minSpeed >= averageSpeed / 1.5 && maxSpeed <= averageSpeed * 1.5) { // second boundaries of min and max percentage
+            return "Satisfactory condition"; // condition assessment
+        } else { // third boundaries of min and max percentage
+            return "Excited condition"; // condition assessment
+        }
+    }
+
+    function openModal() { // show user the message
         setIsOpen(true); // open the message box
     }
 
@@ -204,7 +250,6 @@ function Normaliser() {
     }
 
     let currentTime = Date.now(); // current time, initialised with starting time
-
 
     // return component
     return (
@@ -227,9 +272,9 @@ function Normaliser() {
 
                         draggable={draggable} // if image is draggable or not
 
-                        onDragStart={startDrag} // function on starting the dragging motion
-                        onDragMove={dragPicture} // function on the move of the image
-                        onDragEnd={stopDrag} // function on finishing the dragging motion
+                        onDragStart={onStartDrag} // function on starting the dragging motion
+                        onDragMove={onDragPicture} // function on the move of the image
+                        onDragEnd={onStopDrag} // function on finishing the dragging motion
 
                     />
 
@@ -248,7 +293,7 @@ function Normaliser() {
             </Stage>
 
             <div id="message-div"> {/* message showing */}
-                <Modal class="message-box" // modal dialog component
+                <Modal class="message-box" // modal dialog component, IMPORTANT to use class and NOT className
                        isOpen={modalIsOpen} // is this window open or not
                        onClose={closeModal} // when closing the box
                        contentLabel="Message box" // content label for user accessibility
@@ -275,7 +320,7 @@ function Normaliser() {
                            }
                        }}
                 >
-                    <div>{modalMessage}</div> {/* message to display */}
+                    <div className="modal-message">{modalMessage}</div> {/* message to display */}
 
                     <div className="text-center"> {/* center the button */}
                         {/* button for submitting information and closing the page */}
@@ -326,11 +371,22 @@ function calculatePoints(width, height) {
 }
 
 let points = []; // point of the spiral
-const numberOfCircles = 4; // number of circles in the spiral
+const numberOfCircles = 2; // number of circles in the spiral
 const pointsPerCircle = 100; // number of points for every circle of the spiral
 
 const outOfBounds = "Out of bounds";
 const notEndOfTheLine = "Not end of the line";
 const success = "Success";
+
+// max allowed "step away" distance from current point on the line
+const boundsDistance = 20;
+
+// max allowed "step away" distance from first point on the line
+const startBoundsDistance = 40;
+
+const endOfLine = 10; // the number of point at the center of the spiral that are considered its end
+
+const imageWidth = 60, imageHeight = 60; // define image width and height
+const halfImageWidth = imageWidth / 2, halfImageHeight = imageHeight / 2; // calculate center of the image
 
 export default Normaliser; // expose App function to access in other files
