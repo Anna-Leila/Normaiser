@@ -1,7 +1,7 @@
-div.modal-message {
-    white-space: pre-line;
+div.modal-message { /* css for message in the modal window */
+    white-space: pre-line; /* for new line characters at /n */
 }
 
-div.text-center {
-    margin-top: 8px;
+div.modal-button { /* css for button in the modal window */
+    margin-top: 8px; /* add margin at the top */
 }

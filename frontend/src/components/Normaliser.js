@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react'; // import React from react module
+import React, {useEffect, useRef, useState} from 'react'; // import React from react module
 import {Stage, Layer, Line, Image} from 'react-konva'; // import classes from react-konva library
 import useImage from "use-image"; // import custom React hook for loading images
 import {useNavigate} from "react-router-dom"; // import React hook for navigating between pages
@@ -198,21 +198,32 @@ function Normaliser() {
         const apiAddress = "http://localhost:8080/messages/getByType?type=" + requestType;
         stopProcesses(); // stop moving the picture across the screen
 
+        let myText = ""; // text for modal message
         // await for fetching data and showing message
         await fetch(apiAddress)
             .then((response) => response.text()) // get text message of the api response
             .then((text) => { // show message on screen
-                let myText = text.toString(); // convert to string
+                myText = text.toString(); // convert to string
                 myText = myText.split("+").join('\n'); // replace + by new line symbol \n
-                if (requestType === success) { // if the ending type is success
-                    myText += "\n"; // new line
-                    myText += assessCondition(); // add condition assessment
-                    setMessageColor('#ff9a00'); // set different color to final message
-                }
-                setModalMessage(myText); // set message in the modal window
-                openModal(); // display modal window
             });
+
+        if (requestType === success) { // if the ending type is success
+            myText += "\n"; // new line
+            myText += assessCondition(); // add condition assessment
+            setMessageColor('#ff9a00'); // set different color to final message
+        }
+
+        setModalMessage(myText); // set message in the modal window
+        //openModal(); // display modal window
     }
+
+    // when modal message is updated
+    useEffect(() => {
+        if (modalMessage !== "") { // if modal message is NOT empty
+            openModal(); // open modal window
+        }
+        }, [modalMessage] // function is called at the start and when modal message is updated
+    );
     
     function stopProcesses() { // stop moving the picture across the screen, set session to finished
         setDraggable(false); // set image to NOT draggable
@@ -240,6 +251,7 @@ function Normaliser() {
     }
 
     function openModal() { // show user the message
+        console.log(modalMessage);
         setIsOpen(true); // open the message box
     }
 
@@ -269,9 +281,10 @@ function Normaliser() {
         // butterfly itself
         const butterflyImage = <Image
             key={id} // individual key
-            visible={show[i]} // if visible or not - in the state array
             name={id} // name of element
             id={id} // id of this element
+
+            visible={show[i]} // if visible or not - in the state array
 
             x={points[pointIndex * 2] - halfBWidth} // starting X position on screen
             y={points[pointIndex * 2 + 1] - halfBHeight} // starting Y position on screen
@@ -313,6 +326,7 @@ function Normaliser() {
                     <Image
                         name="rose" // name of element
                         id="rose" // id of this element
+
                         x={startingImagePositionX - halfImageWidth} // starting X position on screen
                         y={startingImagePositionY - halfImageHeight} // starting Y position on screen
 
@@ -327,6 +341,15 @@ function Normaliser() {
                         onDragMove={onDragPicture} // function on the move of the image
                         onDragEnd={onStopDrag} // function on finishing the dragging motion
 
+                        onMouseEnter={e => { // when mouse hovers over movable image
+                            const container = e.target.getStage().container(); // stage container
+                            container.style.cursor = "pointer"; // set cursor style
+                        }}
+
+                        onMouseLeave={e => { // when mouse leaves movable image area
+                            const container = e.target.getStage().container(); // stage container
+                            container.style.cursor = "default"; // set cursor style
+                        }}
                     />
 
                     {/* line - a spiral at the center of the screen */}
@@ -376,7 +399,7 @@ function Normaliser() {
                 >
                     <div className="modal-message">{modalMessage}</div> {/* message to display */}
 
-                    <div className="text-center"> {/* center the button */}
+                    <div className="text-center modal-button"> {/* center the button */}
                         {/* button for submitting information and closing the page */}
                         <button type="submit" className="btn btn-sm" onClick={closeModal}>OK</button>
 
@@ -386,6 +409,7 @@ function Normaliser() {
         </React.Fragment>
     );
 }
+
 
 // if this is the first render, then calculate points of the spiral - find the biggest spiral that fits into the screen
 function calculatePoints(width, height, firstRender) {

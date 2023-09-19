@@ -3,9 +3,9 @@
     font-size: large; /* large font size */
     justify-content: center;
     background-color: #2993fa; /* button color */
-    border-width: 1px;
-    border-color: black;
-    cursor: pointer;
+    border-width: 1px; /* width of button border */
+    border-color: black; /* color of button border */
+    cursor: pointer; /* cursor shape */
 }
 
 @media (hover: hover) { /* feature for devices on which hover works - for computers, not mobile devices */
