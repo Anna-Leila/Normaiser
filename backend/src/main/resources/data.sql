@@ -26,9 +26,9 @@ INSERT INTO messages VALUES
                             (15, 'Not end of the line', 'You have not reached the end of the line+"Focus on where you want to go, not on what you fear."+ ― Tony Robbins'),
                             (16, 'Not end of the line', 'You have not reached the end of the line+“I don’t focus on what I’m up against. I focus on my goals and I try to ignore the rest.”+ ― Venus Williams'),
                             (17, 'Not end of the line', 'You have not reached the end of the line+“I learned to focus and work hard and not give up. I learned that every obstacle is really an opportunity.” ― Jenna Ushkowitz'),
-                            (18, 'Success', 'Amazing work!+“The most distinguishing feature of winners is their intensity of purpose.”+ ― Alymer Letterman'),
+                            (18, 'Success', 'Success!+“The most distinguishing feature of winners is their intensity of purpose.”+ ― Alymer Letterman'),
                             (19, 'Success', 'Success!+“Winners are willing to go longer, work harder, and give more than anyone else.”+ ― Vince Lombardi'),
-                            (20, 'Success', 'That was a great job!+“Victory is sweetest when you’ve known defeat.”+ ― Malcolm Forbes'),
+                            (20, 'Success', 'Success!+“Victory is sweetest when you’ve known defeat.”+ ― Malcolm Forbes'),
                             (21, 'Success', 'Success!+“Fortune befriends the bold.”+ ― Emily Dickinson'),
-                            (22, 'Success', 'Amazing work!"Always be yourself, express yourself, have faith in yourself, do not go out and look for a successful personality and duplicate it." ― Bruce Lee'),
-                            (23, 'Success', 'That was a great job!+“Accept the challenges so that you can feel the exhilaration of victory.”+ ― George S. Patton');
+                            (22, 'Success', 'Success!"Always be yourself, express yourself, have faith in yourself, do not go out and look for a successful personality and duplicate it." ― Bruce Lee'),
+                            (23, 'Success', 'Success!+“Accept the challenges so that you can feel the exhilaration of victory.”+ ― George S. Patton');
