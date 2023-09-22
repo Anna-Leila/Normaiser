@@ -214,7 +214,6 @@ function Normaliser() {
         }
 
         setModalMessage(myText); // set message in the modal window
-        //openModal(); // display modal window
     }
 
     // when modal message is updated
@@ -251,7 +250,6 @@ function Normaliser() {
     }
 
     function openModal() { // show user the message
-        console.log(modalMessage);
         setIsOpen(true); // open the message box
     }
 
