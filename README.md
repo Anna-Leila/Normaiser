@@ -3,6 +3,9 @@
 The application helps you calm down, increases concentration and attention. A couple of minutes for a good result!
 You are asked to pull the rose along the spiral towards the center. If the center of the rose deviates significantly from the line, the attempt will be considered failed. If you stop before reaching the end, the attempt will also be considered failed. If you complete the entire spiral successfully, you will receive an approximate estimate of your condition depending on the speed in different sections of the spiral.
 Good luck!
+### Frameworks and libraries
+React JS and Bootstrap 5 for frontend
+Spring Boot for backend
 ### Installation
 Open terminal. Go to your_folder
 Run “git clone https://github.com/Anna-Leila/Normaiser.git" in your_folder
