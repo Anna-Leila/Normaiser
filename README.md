@@ -8,7 +8,7 @@ React JS and Bootstrap 5 for frontend\
 Spring Boot for backend
 ### Installation
 Open terminal. Go to your_folder\
-Run “git clone https://github.com/Anna-Leila/Normaiser.git" in your_folder\
+Run “git clone https://github.com/Anna-Leila/Normaiser.git" in your_folder
 ##### Run project from IntelliJ Idea:
 Requirements: Java 17 (as a minimum version), git, npm and IntelliJ Idea Ultimate should be installed on the computer in order to run the project. There’s no need to install Maven in this case.
 1.	Open your_folder\Normaiser\backend folder as IntelliJ Idea project
