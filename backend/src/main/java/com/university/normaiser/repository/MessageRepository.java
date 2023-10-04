@@ -9,5 +9,5 @@ import java.util.List; // import List interface
 @Repository // persistence layer - database repository
 // this interface defines a database repository that has Message class as entity and Integer value as ID
 public interface MessageRepository extends JpaRepository<Message, Integer> {
-    List<Message> findByType(String type); // derived Query method, that finds messages according to needed type
+    List<Message> findByMtype(String type); // derived Query method, that finds messages according to needed type
 }

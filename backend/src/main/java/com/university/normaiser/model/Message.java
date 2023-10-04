@@ -20,6 +20,6 @@ public class Message {
     private String message; // message attribute
 
     @Column // this attribute corresponds to a column in the database table
-    private String type; // type attribute
+    private String mtype; // type attribute
 
 }

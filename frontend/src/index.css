@@ -1,7 +1,6 @@
 .btn { /* set css for button */
     color: white;  /* font color */
     font-size: large; /* large font size */
-    justify-content: center;
     background-color: #2993fa; /* button color */
     border-width: 1px; /* width of button border */
     border-color: black; /* color of button border */
@@ -12,11 +11,8 @@
     .btn:hover { /* when hover oven button */
         color: white; /* set button font color white */
         background-color: #fa92fa; /* set button itself magenta */
-    }
-}
-@media (hover: hover) { /* feature for devices on which hover works - for computers, not mobile devices */
-    .nav-item:hover { /* when hover over navigation bar item */
-        color: white; /* set font color white */
-        background-color: #fa92fa; /* set item itself magenta */
+
+        border-width: 1px; /* width of button border */
+        border-color: black; /* color of button border */
     }
 }

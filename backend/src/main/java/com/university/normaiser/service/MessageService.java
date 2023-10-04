@@ -18,7 +18,7 @@ public class MessageService {
 
     // get random message out of all messages of needed type
     public String getMessageByType(String type) {
-        List<Message> messagesOfNecessaryType = messageRepository.findByType(type); // get all messages of needed type
+        List<Message> messagesOfNecessaryType = messageRepository.findByMtype(type); // get all messages of needed type
         int index = getRandomIndex(0, messagesOfNecessaryType.size()); // get random index
         return messagesOfNecessaryType.get(index).getMessage(); // return random message
     }

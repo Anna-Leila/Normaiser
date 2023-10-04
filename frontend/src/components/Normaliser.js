@@ -142,7 +142,7 @@ function Normaliser() {
         // calculate distance between previous image position and current image position
         const pointsDist = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-        distance.current+= pointsDist; // update distance from section start to current point
+        distance.current += pointsDist; // update distance passed by the rose from the end of previous section to current point
 
         imagePositionX.current = x; // update position of image center on X axis
         imagePositionY.current = y; // update position of image center on Y axis
