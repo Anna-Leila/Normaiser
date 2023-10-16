@@ -7,7 +7,8 @@ Good luck!
 React JS and Bootstrap 5 for frontend\
 Spring Boot for backend
 ### Installation
-Development and testing of the project was on Windows 10 Home, with Java 19.0.2, git 2.39.1, NodeJS v18.16.1, npm 9.8.0, Maven 3.9.4\
+Development and testing of the project was on Windows 10 Home, with Java Oracle JDK 19.0.2, git 2.39.1, NodeJS v18.16.1, npm 9.8.0, Maven 3.9.4\
+Open JDK should work too.\
 Your firewall must have permissions for access to local networks (for frontend and backend separately). Typically the firewall asks for access permission during the 1st run of the project.\
 Open terminal. Go to your_folder \
 Run "git clone https://github.com/Anna-Leila/Normaiser.git" in your_folder
