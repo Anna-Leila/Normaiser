@@ -9,6 +9,7 @@
     "canvas": "^2.11.2",
     "eslint": "8.22.0",
     "konva": "^9.2.1",
+    "node-gyp": "^9.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-konva": "^18.2.10",
